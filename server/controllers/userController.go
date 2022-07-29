@@ -25,7 +25,11 @@ func Me(c *fiber.Ctx) error {
 
 	var user models.User
 
-	database.DB.Preload("Company").Preload("Role.RolePermissions.Permission").Where("user_id = ?", claims.Issuer).First(&user)
+	result := database.DB.Preload("Company").Preload("Role.RolePermissions.Permission").Where("user_id = ?", claims.Issuer).First(&user)
+
+	if result.Error != nil {
+		return c.Status(fiber.StatusUnauthorized).Send([]byte("UnAuthorized"))
+	}
 
 	return c.JSON(user)
 }

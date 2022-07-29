@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Navigate } from 'react-router-dom'
 import { getClients } from '../../redux/slices/clientSlice'
 import { getMe } from '../../redux/slices/userSlice'
+import { getUsers } from '../../redux/slices/usersSlice'
 import { AppDispatch } from '../../types/AppDispatch'
 import { Company } from '../../types/Company'
 import { PrivateRouteType } from '../../types/PrivateRoute'
@@ -26,6 +27,7 @@ const PrivateRoute: React.FC<PrivateRouteType> = ({ children }) => {
     if (currentUserState.success) {
       if (!clientState.success) {
         dispatch(getClients(userCompany?.companyId))
+        dispatch(getUsers(userCompany?.companyId))
       }
     }
   }, [clientState.success, currentUserState.success, dispatch, userCompany?.companyId])

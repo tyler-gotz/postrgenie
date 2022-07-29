@@ -18,6 +18,7 @@ const Home: React.FC = () => {
   const user = useSelector<RootState, User | null>((state) => state.user.user)
   const company = useSelector<RootState, Company | null>((state) => state.user.company)
   const clients = useSelector<RootState, Client[]>((state) => state.client.clients)
+  const users = useSelector<RootState, User[]>((state) => state.users.users)
 
   return (
     <PrivateRoute>
@@ -92,7 +93,7 @@ const Home: React.FC = () => {
               </Card.Section>
               <Text weight={500}>Users</Text>
               <Text size="sm" style={{ lineHeight: 1.5 }}>
-                There are currently 0 users at {company?.name}. Click on the button below to manage users.
+                There are currently {users.length} users at {company?.name}. Click on the button below to manage users.
               </Text>
               <Button 
                 component={Link}

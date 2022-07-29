@@ -31,8 +31,20 @@ func RegisterRoutes(api fiber.Router) {
 	api.Post("/login", controllers.Login)
 
 	/*
+		GET /roles
+		GET roles
+	*/
+	api.Get("/roles", controllers.GetRoles)
+
+	/*
 		SET UP CLIENTS ROUTES
 	*/
 	clientsApi := api.Group("/clients")
 	RegisterClientsRoutes(clientsApi)
+
+	/*
+		SET UP USERS ROUTES
+	*/
+	usersApi := api.Group("/users")
+	RegisterUsersRoutes(usersApi)
 }

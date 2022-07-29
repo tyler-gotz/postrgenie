@@ -38,6 +38,7 @@ func Register(c *fiber.Ctx) error {
 		Password:  password,
 		CompanyId: uint(company.CompanyId),
 		RoleId:    1,
+		IsActive:  true,
 	}
 
 	userResult := database.DB.Create(&user)

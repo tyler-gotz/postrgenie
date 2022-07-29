@@ -34,9 +34,9 @@ const Login: React.FC = () => {
       navigate('/')
     }
     
-    return () => {
-      dispatch(clearAuth())
-    }
+    // return () => {
+    //   dispatch(clearAuth())
+    // }
   }, [navigate, loginState.success, dispatch])
 
   return (

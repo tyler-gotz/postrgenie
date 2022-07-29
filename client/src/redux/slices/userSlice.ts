@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RolePermission } from '../../types/RolePermission'
-import { User } from '../../types/User'
 import { UserState } from '../../types/UserState'
 import { getApiServer } from '../../utils/helpers'
 

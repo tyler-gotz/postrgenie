@@ -21,7 +21,7 @@ const ClientModal: FC<Props> = ({ modalType, open, onClose, client, addClient, a
 
   const clientForm = useForm({
     initialValues: client,
-    schema: yupResolver(ClientSchema)
+    validate: yupResolver(ClientSchema)
   })
 
   useEffect(() => {
@@ -31,7 +31,6 @@ const ClientModal: FC<Props> = ({ modalType, open, onClose, client, addClient, a
   }, [open])
   
   const closeModal = () => {
-    clientForm.reset()
     onClose()
   }
 

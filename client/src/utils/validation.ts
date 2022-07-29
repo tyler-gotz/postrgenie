@@ -36,3 +36,14 @@ export const LoginSchema = Yup.object().shape({
 export const ClientSchema = Yup.object().shape({
   name: Yup.string().required('This field is required.')
 })
+
+export const UserSchema = Yup.object().shape({
+  firstName: Yup.string().required('This field is required.'),
+  lastName: Yup.string().required('This field is required.'),
+  email: Yup.string().required('This field is required.'),
+  userType: Yup.string().required('This field is required.'),
+  client: Yup.string().when('userType', {
+    is: (val: string) => val === 'CLIENT_USER',
+    then: (schema) => schema.required('This field is required.')
+  })
+})

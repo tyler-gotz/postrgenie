@@ -118,8 +118,8 @@ const Clients: React.FC = () => {
             }}
             onClick={() => handleOpenModal(undefined)}
           >
-            <Plus />
             Add Client
+            <Plus size={16} />
           </Button>
         </Group>
         <div style={{ marginTop: 10 }}>
