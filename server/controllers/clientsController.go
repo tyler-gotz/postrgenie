@@ -31,7 +31,7 @@ func AddClient(c *fiber.Ctx) error {
 
 	client := models.Client{
 		Name:      data["name"],
-		CompanyId: companyId,
+		CompanyId: uint(companyId),
 	}
 
 	result := database.DB.Create(&client)
@@ -46,13 +46,23 @@ func AddClient(c *fiber.Ctx) error {
 func DeleteClient(c *fiber.Ctx) error {
 	company := c.Params("id")
 
-	result := database.DB.Delete(&models.Client{}, company)
+	var client models.Client
 
-	if result.Error != nil {
-		return c.Status(fiber.StatusInternalServerError).Send([]byte("Internal Server Error"))
+	database.DB.Preload("ClientEmployee").Where("client_id = ?", &company).First(&client)
+
+	var employees []int
+
+	for i := 0; i < len(client.ClientEmployee); i++ {
+		employees = append(employees, int(client.ClientEmployee[i].UserId))
 	}
 
-	return c.Send([]byte(company))
+	database.DB.Delete(&models.ClientEmployee{}, "user_id IN ?", employees)
+
+	database.DB.Delete(&models.User{}, "user_id IN ?", employees)
+
+	database.DB.Delete(&models.Client{}, "client_id = ?", company)
+
+	return c.JSON(&company)
 }
 
 func UpdateClient(c *fiber.Ctx) error {

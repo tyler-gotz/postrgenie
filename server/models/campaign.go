@@ -9,6 +9,7 @@ type Campaign struct {
 	DateCompleted time.Time `json:"dateCompleted"`
 	ClientId      int       `json:"clientId"`
 	Client        Client
+	Status        string    `json:"status"`
 	CreatedAt     time.Time `json:"-"`
 	UpdatedAt     time.Time `json:"-"`
 }

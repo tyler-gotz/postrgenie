@@ -24,28 +24,7 @@ func Connect() {
 	DB = connection
 	fmt.Println("Connected to DB")
 
-	if err = connection.AutoMigrate(&models.Status{}); err == nil && connection.Migrator().HasTable(&models.Status{}) {
-		if err := connection.First(&models.Status{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
-			connection.Create(&models.Status{
-				Name: "CREATED",
-			})
-			connection.Create(&models.Status{
-				Name: "IN_PROGRESS",
-			})
-			connection.Create(&models.Status{
-				Name: "FINISHED",
-			})
-			connection.Create(&models.Status{
-				Name: "SUBMITTED",
-			})
-			connection.Create(&models.Status{
-				Name: "APPROVED",
-			})
-			connection.Create(&models.Status{
-				Name: "REJECTED",
-			})
-		}
-	}
+	// STATUSES - CREATED, IN PROGRESS, FINISHED, SUBMITTED, APPROVED, REJECTED
 
 	if err = connection.AutoMigrate(&models.Role{}); err == nil && connection.Migrator().HasTable(&models.Role{}) {
 		if err := connection.First(&models.Role{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
@@ -85,12 +64,10 @@ func Connect() {
 		&models.Company{},
 		&models.Client{},
 		&models.Campaign{},
-		&models.CampaignStatus{},
 		&models.RolePermission{},
 		&models.User{},
 		&models.CampaignUser{},
 		&models.Image{},
-		&models.ImageStatus{},
 		&models.ClientEmployee{},
 		&models.Note{},
 	)

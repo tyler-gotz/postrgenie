@@ -7,7 +7,7 @@ import { RootState } from '../../types/RootState'
 import { User } from '../../types/User'
 import UserModal from '../../components/UserModal'
 import { AppDispatch } from '../../types/AppDispatch'
-import { addUser, getRoles } from '../../redux/slices/usersSlice'
+import { addUser, getRoles, resetAddAndUpdate } from '../../redux/slices/usersSlice'
 import { Role } from '../../types/Role'
 import { Client } from '../../types/Client'
 import { RequestState } from '../../types/RequestState'
@@ -27,6 +27,7 @@ const Users: FC = () => {
   const addUserState = useSelector<RootState, RequestState>((state) => state.users.addUser)
 
   const handleOpenModal = () => {
+    dispatch(resetAddAndUpdate())
     setOpened(true)
   }
 

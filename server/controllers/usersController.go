@@ -5,8 +5,11 @@ import (
 	"io/ioutil"
 	"strconv"
 	"strings"
+	"time"
 
+	"github.com/dgrijalva/jwt-go/v4"
 	"github.com/gofiber/fiber/v2"
+	"github.com/tyler-gotz/postrgenie/server/config"
 	"github.com/tyler-gotz/postrgenie/server/database"
 	"github.com/tyler-gotz/postrgenie/server/models"
 
@@ -86,7 +89,10 @@ func AddUser(c *fiber.Ctx) error {
 			UserId:   uint(user.UserId),
 		}
 
-		database.DB.Create(&clientUser)
+		if err := database.DB.Create(&clientUser).Error; err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(err.Error())
+		}
+
 	}
 
 	var createdUser models.User
@@ -102,11 +108,27 @@ func AddUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).Send([]byte("Internal Server Error"))
 	}
 
+	replaceFirstName := strings.Replace(string(file_data), "$replace_firstname$", user.FirstName, 1)
+	replaceLastName := strings.Replace(replaceFirstName, "$replace_lastname$", user.LastName, 1)
+
+	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
+		Issuer:    strconv.Itoa(int(user.UserId)),
+		ExpiresAt: jwt.At(time.Now().Add(time.Hour * 24)),
+	})
+
+	secret := config.GetEnvVariable("JWT_SECRET")
+	token, err := claims.SignedString([]byte(secret))
+
+	client := config.GetEnvVariable("CLIENT")
+	signupUrl := client + "/signup?claim=" + token
+
+	message := strings.Replace(replaceLastName, "$replace_link$", signupUrl, 1)
+
 	msg := gomail.NewMessage()
 	msg.SetHeader("From", "postrgenie@google.com")
 	msg.SetHeader("To", createdUser.Email)
 	msg.SetHeader("Subject", "New PostrGenie Account")
-	msg.SetBody("text/html", strings.Replace(string(file_data), "$replace_firstname$", user.FirstName, 1))
+	msg.SetBody("text/html", message)
 
 	n := gomail.NewDialer("0.0.0.0", 1025, "", "")
 

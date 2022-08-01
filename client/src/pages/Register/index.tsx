@@ -26,7 +26,7 @@ const Register: React.FC = () => {
       password: '',
       confirmPassword: ''
     },
-    schema: yupResolver(RegisterSchema)
+    validate: yupResolver(RegisterSchema)
   })
 
   useEffect(() => {

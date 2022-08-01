@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 
@@ -95,4 +96,66 @@ func Login(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"message": "success",
 	})
+}
+
+func Verify(c *fiber.Ctx) error {
+	claim := c.Query("claim")
+
+	secret := config.GetEnvVariable("JWT_SECRET")
+
+	token, err := jwt.ParseWithClaims(claim, &jwt.StandardClaims{}, func(t *jwt.Token) (interface{}, error) {
+		return []byte(secret), nil
+	})
+
+	if err != nil {
+		return c.Status(fiber.StatusUnauthorized).Send([]byte("Unauthorized I guess. Hahahaha"))
+	}
+
+	claims := token.Claims.(*jwt.StandardClaims)
+	var user models.User
+
+	result := database.DB.Where("user_id = ?", claims.Issuer).First(&user)
+
+	if result.Error != nil {
+		return c.Status(fiber.StatusUnauthorized).Send([]byte("UnAuthorized"))
+	}
+
+	return c.JSON(user)
+}
+
+func SignUp(c *fiber.Ctx) error {
+	var data map[string]string
+	if err := c.BodyParser(&data); err != nil {
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("Internal Server Error"))
+	}
+
+	password, _ := bcrypt.GenerateFromPassword([]byte(data["password"]), 16)
+
+	result := database.DB.Where("user_id= ?", data["userId"]).Updates(models.User{
+		FirstName: data["firstName"],
+		LastName:  data["lastName"],
+		Email:     data["email"],
+		Password:  password,
+		IsActive:  true,
+	})
+
+	if result.Error != nil {
+		fmt.Println(result.Error)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("Internal Server Error"))
+	}
+
+	return c.Send([]byte(data["userId"]))
+}
+
+func Logout(c *fiber.Ctx) error {
+	cookie := fiber.Cookie{
+		Name:     "postrgenie_jwt",
+		Value:    "",
+		Expires:  time.Now().Add(-time.Hour),
+		HTTPOnly: true,
+	}
+
+	c.Cookie(&cookie)
+
+	return c.Send([]byte("Success"))
 }

@@ -1,15 +1,23 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Header, MediaQuery, Title, useMantineTheme } from '@mantine/core'
 import { Wand } from 'tabler-icons-react'
-import { Link } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { Link, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 import { RequestState } from '../../types/RequestState'
 import { RootState } from '../../types/RootState'
+import { AppDispatch } from '../../types/AppDispatch'
+import { clearAuth, logout } from '../../redux/slices/authSlice'
+import { resetGetMe } from '../../redux/slices/userSlice'
 
 const AppHeader: React.FC = () => {
   const theme = useMantineTheme()
 
+  const dispatch = useDispatch<AppDispatch>()
+
   const currentUserState = useSelector<RootState, RequestState>((state) => state.user.getMe)
+  const logoutState = useSelector<RootState, RequestState>((state) => state.auth.logout)
+
+  const navigate = useNavigate()
 
   let menuItems
 
@@ -17,6 +25,17 @@ const AppHeader: React.FC = () => {
     menuItems = null
   }
 
+  const handleLogout = () => {
+    dispatch(logout())
+  }
+
+  useEffect(() => {
+    if (logoutState.success) {
+      dispatch(resetGetMe())
+      dispatch(clearAuth())
+      navigate('/login')
+    }
+  }, [logoutState.success])
 
   if (currentUserState.success) {
     menuItems = (
@@ -30,7 +49,7 @@ const AppHeader: React.FC = () => {
         <Link to="/users" style={{ marginRight: 15 }}>
           Users
         </Link>
-        <Link to="/users" style={{ marginRight: 15 }}>
+        <Link to="#" style={{ marginRight: 15 }} onClick={handleLogout}>
           Logout
         </Link>
       </>

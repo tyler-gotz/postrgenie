@@ -20,23 +20,27 @@ const ClientModal: FC<Props> = ({ modalType, open, onClose, client, addClient, a
   const theme = useMantineTheme()
 
   const clientForm = useForm({
-    initialValues: client,
+    initialValues: {
+      name: client.name
+    },
     validate: yupResolver(ClientSchema)
   })
 
   useEffect(() => {
     if (open) {
-      clientForm.reset()
+      clientForm.setFieldValue('name', client.name)
     }
   }, [open])
   
   const closeModal = () => {
     onClose()
+    clientForm.reset()
   }
 
   useEffect(() => {
     if (addClientState.success || updateClientState.success) {
       onClose()
+      clientForm.reset()
     }
   }, [addClientState.success, onClose, updateClientState.success])
 

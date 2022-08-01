@@ -17,6 +17,7 @@ const Login: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
   const registerState = useSelector<RootState, RequestState>((state) => state.auth.register)
   const loginState = useSelector<RootState, RequestState>((state) => state.auth.login)
+  const signUpState = useSelector<RootState, RequestState>((state) => state.auth.signUp)
 
   const navigate = useNavigate()
 
@@ -25,7 +26,7 @@ const Login: React.FC = () => {
       email: '',
       password: ''
     },
-    schema: yupResolver(LoginSchema)
+    validate: yupResolver(LoginSchema)
   })
 
   useEffect(() => {
@@ -54,6 +55,13 @@ const Login: React.FC = () => {
       {
         registerState.success && (
           <Alert icon={<AlertCircle size={16} />} title="Thank You For Registering Your Company." mb={12} color="green">
+            Please Login.
+          </Alert>
+        )
+      }
+      {
+        signUpState.success && (
+          <Alert icon={<AlertCircle size={16} />} title="Thank You For Signing Up" mb={12} color="green">
             Please Login.
           </Alert>
         )

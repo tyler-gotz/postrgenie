@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 import { Client } from '../../types/Client'
 import { ClientState } from '../../types/ClientState'
 import { getApiServer } from '../../utils/helpers'
@@ -67,18 +67,17 @@ export const addClient = createAsyncThunk<Client, { name: string, company: strin
   }
 )
 
-export const deleteClient = createAsyncThunk<string, number, { rejectValue: string | undefined }>(
+export const deleteClient = createAsyncThunk<number, number, { rejectValue: string | undefined }>(
   'client/delete',
   async (companyId, { rejectWithValue }) => {
-    const response = await fetch(`${serverUrl}/clients/${companyId}`, {
+    const response: any = await fetch(`${serverUrl}/clients/${companyId}`, {
       headers: {'Content-Type': 'application/json'},
       credentials: 'include',
       method: 'DELETE',
     })
 
     if (response.status >= 200 && response.status <= 299) {
-      const content = await response.text()
-      return content
+      return companyId
     } else {
       const errorResponse = await response.text()
       return rejectWithValue(errorResponse)
@@ -207,13 +206,15 @@ export const clientSlice = createSlice({
         error: false
       }
     }),
-    builder.addCase(deleteClient.fulfilled, (state: ClientState, { payload }: PayloadAction<string>) => {
+    builder.addCase(deleteClient.fulfilled, (state: ClientState, { payload }: PayloadAction<number>) => {
       state.deleteClient = {
         ...state.deleteClient,
         success: true,
         loading: false
       }
-      state.clients = state.clients.filter((client) => client.clientId !== parseInt(payload, 10))
+      
+      const currentClients = current(state.clients)
+      state.clients = currentClients.filter((client) => client.clientId !== payload)
     }),
     builder.addCase(deleteClient.rejected, (state: ClientState, { payload }: PayloadAction<string | undefined>) => {
       state.deleteClient = {

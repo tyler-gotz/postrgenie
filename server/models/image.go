@@ -9,6 +9,7 @@ type Image struct {
 	User          User
 	CampaignId    int `json:"campaignId"`
 	Campaign      Campaign
+	Status        string    `json:"status"`
 	CreatedAt     time.Time `json:"-"`
 	UpdatedAt     time.Time `json:"-"`
 }

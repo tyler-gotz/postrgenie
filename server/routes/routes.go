@@ -31,6 +31,24 @@ func RegisterRoutes(api fiber.Router) {
 	api.Post("/login", controllers.Login)
 
 	/*
+		POST /logout
+		Logout User
+	*/
+	api.Post("/logout", controllers.Logout)
+
+	/*
+		GET /verify
+		Verify User
+	*/
+	api.Get("/verify", controllers.Verify)
+
+	/*
+		POST /signup
+		SignUp User
+	*/
+	api.Post("/signup", controllers.SignUp)
+
+	/*
 		GET /roles
 		GET roles
 	*/

@@ -6,6 +6,7 @@ import Clients from './pages/Clients'
 import Users from './pages/Users'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import SignUp from './pages/SignUp'
 
 import './App.css'
 
@@ -19,6 +20,7 @@ const App: React.FC = () => {
           <Route path='/users' element={<Users />} />
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
+          <Route path='/signup' element={<SignUp />} />
           <Route path='*' element={<div>Does not exist loser!!</div>} />
         </Route>
       </Routes>

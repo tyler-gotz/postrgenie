@@ -81,7 +81,21 @@ export const addUser = createAsyncThunk<User, UserValues, { rejectValue: string 
 export const usersSlice = createSlice({
   name: 'users',
   initialState,
-  reducers: { },
+  reducers: {
+    resetAddAndUpdate: (state) => {
+      state.addUser = {
+        loading: false,
+        success: false,
+        error: false
+      }
+
+      // state.updateClient = {
+      //   loading: false,
+      //   success: false,
+      //   error: false
+      // }
+    }
+  },
   extraReducers: (builder) => {
     builder.addCase(getUsers.pending, (state: UsersState) => {
       state.getUsers = {
@@ -139,6 +153,6 @@ export const usersSlice = createSlice({
   }
 })
 
-// export const { } = usersSlice.actions
+export const { resetAddAndUpdate } = usersSlice.actions
 
 export default usersSlice.reducer
