@@ -9,7 +9,7 @@ import { RequestState } from '../../types/RequestState'
 import ClientModal from '../../components/ClientModal'
 import { Company } from '../../types/Company'
 import { AppDispatch } from '../../types/AppDispatch'
-import { addClient, deleteClient, resetAddAndUpdate, updateClient } from '../../redux/slices/clientSlice'
+import { addClient, deleteClient, getClients, resetClientState, updateClient } from '../../redux/slices/clientSlice'
 import { showNotification } from '@mantine/notifications'
 
 const Clients: React.FC = () => {
@@ -29,9 +29,22 @@ const Clients: React.FC = () => {
   const addClientState = useSelector<RootState, RequestState>((state) => state.client.addClient)
   const deleteClientState = useSelector<RootState, RequestState>((state) => state.client.deleteClient)
   const updateClientState = useSelector<RootState, RequestState>((state) => state.client.updateClient)
+  const currentUserState = useSelector<RootState, RequestState>((state) => state.user.getMe)
+
+  useEffect(() => {
+    if (currentUserState.success) {
+      if (!clientState.success) {
+        dispatch(getClients(company?.companyId))
+      }
+    }
+  }, [clientState.success, company?.companyId, currentUserState.success, dispatch])
+
+  useEffect(() => () => {
+    dispatch(resetClientState())
+  }, [])
 
   const handleOpenModal = (id: number | undefined) => {
-    dispatch(resetAddAndUpdate())
+    dispatch(resetClientState())
     if (id) {
       setClientId(id)
       const fetchedClient = clients.find((c) => c.clientId === id)

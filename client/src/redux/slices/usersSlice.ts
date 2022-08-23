@@ -82,13 +82,18 @@ export const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
-    resetAddAndUpdate: (state) => {
+    resetUsersState: (state) => {
       state.addUser = {
         loading: false,
         success: false,
         error: false
       }
 
+      state.getUsers = {
+        loading: false,
+        success: false,
+        error: false
+      }
       // state.updateClient = {
       //   loading: false,
       //   success: false,
@@ -153,6 +158,6 @@ export const usersSlice = createSlice({
   }
 })
 
-export const { resetAddAndUpdate } = usersSlice.actions
+export const { resetUsersState } = usersSlice.actions
 
 export default usersSlice.reducer

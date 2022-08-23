@@ -18,13 +18,22 @@ import (
 
 func GetUsers(c *fiber.Ctx) error {
 	companyId := c.Query("company")
+	role := c.Query("role")
 
 	var users []models.User
 
-	result := database.DB.Preload("Role").Preload("ClientEmployee.Client").Where("company_id = ?", companyId).Find(&users)
+	if len(role) > 0 {
+		result := database.DB.Where("company_id = ?", companyId).Where("role_id = ?", role).Find(&users)
 
-	if result.Error != nil {
-		return c.Status(fiber.StatusInternalServerError).Send([]byte("Internal Server Error"))
+		if result.Error != nil {
+			return c.Status(fiber.StatusInternalServerError).Send([]byte("Internal Server Error"))
+		}
+	} else {
+		result := database.DB.Preload("Role").Preload("ClientEmployee.Client").Where("company_id = ?", companyId).Find(&users)
+
+		if result.Error != nil {
+			return c.Status(fiber.StatusInternalServerError).Send([]byte("Internal Server Error"))
+		}
 	}
 
 	return c.JSON(users)
@@ -134,7 +143,8 @@ func AddUser(c *fiber.Ctx) error {
 
 	// Send the email
 	if err := n.DialAndSend(msg); err != nil {
-		panic(err)
+		fmt.Println("Unable to send email")
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("Unable to send email."))
 	}
 
 	return c.JSON(&createdUser)

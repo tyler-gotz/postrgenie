@@ -111,7 +111,7 @@ export const clientSlice = createSlice({
   name: 'client',
   initialState,
   reducers: {
-    resetAddAndUpdate: (state) => {
+    resetClientState: (state) => {
       state.addClient = {
         loading: false,
         success: false,
@@ -122,6 +122,12 @@ export const clientSlice = createSlice({
         loading: false,
         success: false,
         error: false
+      }
+
+      state.getClients = {
+        loading: false,
+        error: false,
+        success: false
       }
     }
   },
@@ -267,6 +273,6 @@ export const clientSlice = createSlice({
   }
 })
 
-export const { resetAddAndUpdate } = clientSlice.actions
+export const { resetClientState } = clientSlice.actions
 
 export default clientSlice.reducer

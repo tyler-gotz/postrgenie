@@ -65,4 +65,10 @@ func RegisterRoutes(api fiber.Router) {
 	*/
 	usersApi := api.Group("/users")
 	RegisterUsersRoutes(usersApi)
+
+	/*
+		SET UP CAMPAIGNS ROUTES
+	*/
+	campaignsApi := api.Group("/campaigns")
+	RegisterCampaignsRoutes(campaignsApi)
 }

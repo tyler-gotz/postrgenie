@@ -9,6 +9,7 @@ import Register from './pages/Register'
 import SignUp from './pages/SignUp'
 
 import './App.css'
+import Campaigns from './pages/Campaigns'
 
 const App: React.FC = () => {
   return (
@@ -16,6 +17,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path='/' element={<Layout />}>
           <Route index element={<Home />} />
+          <Route path='/campaigns' element={<Campaigns />} />
           <Route path='/clients' element={<Clients />} />
           <Route path='/users' element={<Users />} />
           <Route path='/login' element={<Login />} />

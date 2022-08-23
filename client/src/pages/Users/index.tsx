@@ -7,7 +7,7 @@ import { RootState } from '../../types/RootState'
 import { User } from '../../types/User'
 import UserModal from '../../components/UserModal'
 import { AppDispatch } from '../../types/AppDispatch'
-import { addUser, getRoles, resetAddAndUpdate } from '../../redux/slices/usersSlice'
+import { addUser, getRoles, getUsers, resetUsersState } from '../../redux/slices/usersSlice'
 import { Role } from '../../types/Role'
 import { Client } from '../../types/Client'
 import { RequestState } from '../../types/RequestState'
@@ -25,9 +25,22 @@ const Users: FC = () => {
   const roles = useSelector<RootState, Role[]>((state) => state.users.roles)
   const clients = useSelector<RootState, Client[]>((state) => state.client.clients)
   const addUserState = useSelector<RootState, RequestState>((state) => state.users.addUser)
+  const currentUserState = useSelector<RootState, RequestState>((state) => state.user.getMe)
+  const usersState = useSelector<RootState, RequestState>((state) => state.users.getUsers)
+
+  useEffect(() => {
+    if (currentUserState.success) {
+      if (!usersState.success) {
+        dispatch(getUsers(company?.companyId))
+      }
+    }
+  }, [company?.companyId, currentUserState.success, dispatch, usersState.success])
+
+  useEffect(() => () => {
+    dispatch(resetUsersState())
+  }, [])
 
   const handleOpenModal = () => {
-    dispatch(resetAddAndUpdate())
     setOpened(true)
   }
 
